@@ -1,6 +1,7 @@
-// cart.js
 const Cart = {
   items: [],
+  promoApplied: false,
+  discount: 0,
 
   addItem(productId) {
     const product = products.find(p => p.id === productId);
@@ -36,6 +37,7 @@ const Cart = {
 
   clearCart() {
     this.items = [];
+    this.resetPromo(); // reset promo code
     UI.updateCart();
   },
 
@@ -45,5 +47,49 @@ const Cart = {
 
   getCount() {
     return this.items.reduce((sum, item) => sum + item.quantity, 0);
+  },
+
+
+
+
+
+
+
+// ----------------------------------------------------
+// Live Test Extended part
+// ----------------------------------------------------
+
+
+
+  // Promo Code Functions
+  applyPromo(code) {
+    if (this.promoApplied) {
+      alert("Promo code already applied!");
+      return false;
+    }
+
+    const total = this.getTotal();
+    let discount = 0;
+
+    if (code === "ostad10") {
+      discount = total * 0.10;
+    } else if (code === "ostad50") {
+      discount = total * 0.50;
+    } else {
+      return false; // invalid code
+    }
+
+    this.discount = discount;
+    this.promoApplied = true;
+    return true;
+  },
+
+  getTotalWithDiscount() {
+    return this.getTotal() - this.discount;
+  },
+
+  resetPromo() {
+    this.promoApplied = false;
+    this.discount = 0;
   }
 };

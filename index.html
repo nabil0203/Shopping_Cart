@@ -33,11 +33,34 @@
             <!-- Cart items will be injected here -->
         </div>
         <div class="mt-4 text-lg font-semibold">
-            Total: $<span id="cart-total">0.00</span>
+            Total: <span id="cart-total">0.00 BDT</span>
         </div>
+
+
+
+
+
+
+        <!-- ----------------------------------------------------
+        Live Test Extended part
+        ------------------------------------------------------>
+
+        <!-- Promo Code Section -->
         <div class="mt-4">
-            <button onclick="Cart.clearCart()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Clear
-                Cart</button>
+            <input id="promo-code" type="text" placeholder="Enter Promo Code" class="border px-3 py-2 rounded w-48">
+            <button onclick="UI.applyPromo()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Apply
+            </button>
+            <p id="promo-message" class="mt-2 text-sm text-red-500"></p>
+        </div>
+
+
+
+        
+        <div class="mt-4">
+            <button onclick="Cart.clearCart()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                Clear Cart
+            </button>
         </div>
     </section>
 

@@ -1,4 +1,3 @@
-// ui.js
 const UI = {
   init() {
     this.displayProducts();
@@ -17,7 +16,7 @@ const UI = {
         <img src="${product.image}" alt="${product.name}" class="w-full h-120 object-cover mb-4 rounded">
         <h3 class="text-lg font-bold">${product.name}</h3>
         <p class="text-gray-600">${product.description}</p>
-        <p class="text-blue-600 font-bold my-2">$${product.price.toFixed(2)}</p>
+        <p class="text-blue-600 font-bold my-2">${product.price.toFixed(2)}</p>
         <button class="add-to-cart bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600" data-id="${product.id}">
           Add to Cart
         </button>
@@ -26,7 +25,6 @@ const UI = {
       productList.appendChild(div);
     });
 
-    // Event delegation for "Add to Cart"
     productList.addEventListener("click", (e) => {
       if (e.target.classList.contains("add-to-cart")) {
         const id = parseInt(e.target.dataset.id);
@@ -42,7 +40,7 @@ const UI = {
 
     cartItemsDiv.innerHTML = "";
     cartCount.textContent = Cart.getCount();
-    cartTotal.textContent = Cart.getTotal().toFixed(2);
+    cartTotal.textContent = Cart.getTotalWithDiscount().toFixed(2) + " BDT";
 
     if (Cart.items.length === 0) {
       cartItemsDiv.innerHTML = "<p class='text-gray-600'>Your cart is empty.</p>";
@@ -56,7 +54,7 @@ const UI = {
       div.innerHTML = `
         <div>
           <h4 class="font-semibold">${item.name}</h4>
-          <p class="text-gray-600">$${item.price.toFixed(2)}</p>
+          <p class="text-gray-600">${item.price.toFixed(2)}</p>
         </div>
         <div class="flex items-center space-x-2">
           <input type="number" min="1" value="${item.quantity}" 
@@ -71,7 +69,6 @@ const UI = {
       cartItemsDiv.appendChild(div);
     });
 
-    // Quantity update & remove (delegation)
     cartItemsDiv.addEventListener("input", (e) => {
       if (e.target.classList.contains("quantity-input")) {
         const id = parseInt(e.target.dataset.id);
@@ -88,6 +85,32 @@ const UI = {
         Cart.removeItem(id);
       }
     });
+  },
+
+
+
+
+
+  // ----------------------------------------------------
+  // Live Test Extended part
+  // ----------------------------------------------------
+
+  
+  applyPromo() {
+    const codeInput = document.getElementById("promo-code");
+    const code = codeInput.value.trim();
+    const message = document.getElementById("promo-message");
+
+    if (Cart.applyPromo(code)) {
+      UI.updateCart();
+      message.textContent = `Promo applied! You saved ${Cart.discount.toFixed(2)} BDT.`;
+      message.classList.remove("text-red-500");
+      message.classList.add("text-green-500");
+    } else {
+      message.textContent = "Invalid Promo Code";
+      message.classList.remove("text-green-500");
+      message.classList.add("text-red-500");
+    }
   }
 };
 
