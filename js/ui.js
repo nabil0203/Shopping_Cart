@@ -14,17 +14,24 @@ const UI = {
       div.className = "bg-white shadow p-4 rounded-lg";
 
       div.innerHTML = `
-        <img src="${product.image}" alt="${product.name}" class="w-full h-40 object-cover mb-4 rounded">
+        <img src="${product.image}" alt="${product.name}" class="w-full h-120 object-cover mb-4 rounded">
         <h3 class="text-lg font-bold">${product.name}</h3>
         <p class="text-gray-600">${product.description}</p>
         <p class="text-blue-600 font-bold my-2">$${product.price.toFixed(2)}</p>
-        <button onclick="Cart.addItem(${product.id})"
-          class="bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600">
+        <button class="add-to-cart bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600" data-id="${product.id}">
           Add to Cart
         </button>
       `;
 
       productList.appendChild(div);
+    });
+
+    // Event delegation for "Add to Cart"
+    productList.addEventListener("click", (e) => {
+      if (e.target.classList.contains("add-to-cart")) {
+        const id = parseInt(e.target.dataset.id);
+        Cart.addItem(id);
+      }
     });
   },
 
@@ -53,25 +60,35 @@ const UI = {
         </div>
         <div class="flex items-center space-x-2">
           <input type="number" min="1" value="${item.quantity}" 
-            onchange="Cart.updateQuantity(${item.id}, this.value)" 
-            class="w-16 border rounded px-2 py-1">
-          <button onclick="Cart.removeItem(${item.id})"
-            class="text-red-600 hover:underline">Remove</button>
+            data-id="${item.id}"
+            class="quantity-input w-16 border rounded px-2 py-1">
+          <button class="remove-item text-red-600 hover:underline" data-id="${item.id}">
+            Remove
+          </button>
         </div>
       `;
 
       cartItemsDiv.appendChild(div);
     });
-  },
 
-  checkout() {
-    if (Cart.items.length === 0) {
-      alert("Your cart is empty!");
-      return;
-    }
-    alert(`Checkout successful!\nTotal: $${Cart.getTotal().toFixed(2)}`);
-    Cart.clearCart();
+    // Quantity update & remove (delegation)
+    cartItemsDiv.addEventListener("input", (e) => {
+      if (e.target.classList.contains("quantity-input")) {
+        const id = parseInt(e.target.dataset.id);
+        const qty = parseInt(e.target.value);
+        if (qty > 0) {
+          Cart.updateQuantity(id, qty);
+        }
+      }
+    });
+
+    cartItemsDiv.addEventListener("click", (e) => {
+      if (e.target.classList.contains("remove-item")) {
+        const id = parseInt(e.target.dataset.id);
+        Cart.removeItem(id);
+      }
+    });
   }
 };
 
-window.onload = () => UI.init();
+window.addEventListener("DOMContentLoaded", () => UI.init());
